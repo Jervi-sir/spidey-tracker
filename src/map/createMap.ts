@@ -52,8 +52,8 @@ export function createMap(container: HTMLElement, opts: CreateMapOptions = {}): 
     installGlobeSpin(map);
 
     /* Surface map failures instead of rendering a silently blank canvas. */
-    map.on('error', (e: { error?: Error }) => {
-      console.error('[map]', e.error?.message ?? e);
+    map.on('error', (e: any) => {
+      console.error('[map]', e?.error?.message ?? e);
     });
 
     if (import.meta.env.DEV) {

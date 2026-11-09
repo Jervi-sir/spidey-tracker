@@ -56,7 +56,7 @@ function tickerContent(): ComponentChildren[] {
  * HUD chrome: pixel frame, logo plate, corner buttons, filter chips,
  * ticker bar, climbing hero, report CTA.
  */
-export function FrameChrome({ onReport, onTakeMeThere }: Props) {
+export function FrameChrome({ onTakeMeThere }: Props) {
   const [wordA, wordB] = splitSiteName(config.siteName);
   return (
     <div class="hud">

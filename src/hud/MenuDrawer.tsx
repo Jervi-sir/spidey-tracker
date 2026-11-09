@@ -3,11 +3,11 @@ import { sfx, unlockAudio } from '../audio/sfx';
 import { ActivityLog } from './ActivityLog';
 
 interface Props {
-  onReport: () => void;
+  onReport?: () => void;
   onJump: (id: string) => void;
 }
 
-export function MenuDrawer({ onReport, onJump }: Props) {
+export function MenuDrawer({ onJump }: Props) {
   const panel = openPanel.value;
   if (panel === 'none') return null;
 

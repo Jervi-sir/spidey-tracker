@@ -9,7 +9,6 @@ import { createMap } from './map/createMap';
 import { installPins, flyToSighting } from './map/pins';
 import { globeSpin } from './map/globeSpin';
 import { addSightings, sightings, latestArrival } from './state/sightings';
-import { isDemoMode } from './config';
 import { sfx, unlockAudio } from './audio/sfx';
 import type { Map as MLMap } from 'maplibre-gl';
 

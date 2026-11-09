@@ -5,8 +5,6 @@
  * by editing env vars (or this file) without touching components.
  */
 
-const env = import.meta.env;
-
 export const config = {
   /** Site title shown in the logo plate, preloader, and ticker. */
   siteName: 'HMMMM TRACKER',
