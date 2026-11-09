@@ -26,7 +26,7 @@ export function MenuDrawer({ onReport, onJump }: Props) {
             <button class="menu-item" onClick={() => (openPanel.value = 'log')}>
               ACTIVITY LOG
             </button>
-            <button
+            {/* <button
               class="menu-item"
               onClick={() => {
                 openPanel.value = 'none';
@@ -34,10 +34,10 @@ export function MenuDrawer({ onReport, onJump }: Props) {
               }}
             >
               REPORT SIGHTING
-            </button>
-            <button class="menu-item" onClick={() => (openPanel.value = 'help')}>
+            </button> */}
+            {/* <button class="menu-item" onClick={() => (openPanel.value = 'help')}>
               HELP
-            </button>
+            </button> */}
             <button
               class="menu-item"
               onClick={() => {

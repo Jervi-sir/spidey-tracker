@@ -9,7 +9,6 @@ import styleJson from './style/spidy-dark.json';
 import { config } from '../config';
 import { installQuantizedZoom } from './quantizedZoom';
 import { installGlobeSpin } from './globeSpin';
-import { flyToHome } from './ipLocate';
 
 interface CreateMapOptions {
   onZoomStep?: (dir: 1 | -1) => void;
@@ -21,48 +20,51 @@ setWorkerUrl(maplibreWorkerUrl);
  * Boots the MapLibre map: committed retro style, globe projection,
  * env-overridable tile source, idle globe spin, stepped zoom.
  */
-export function createMap(container: HTMLElement, opts: CreateMapOptions = {}): MLMap {
-  const style = structuredClone(styleJson) as any;
-  /* Tile source is env-overridable (self-host escape hatch). */
-  style.sources.openmaptiles.url = config.tilesUrl;
+export function createMap(container: HTMLElement, opts: CreateMapOptions = {}): MLMap | null {
+  try {
+    const style = structuredClone(styleJson) as any;
+    /* Tile source is env-overridable (self-host escape hatch). */
+    style.sources.openmaptiles.url = config.tilesUrl;
 
-  const map = new MLMap({
-    container,
-    style,
-    center: [-40, 30],
-    zoom: 1.8,
-    minZoom: 1,
-    maxZoom: 17,
-    attributionControl: { compact: true },
-    fadeDuration: 0,
-    /* Cap the backing-store resolution — big perf win on hiDPI screens,
-       and a subtly chunkier render fits the retro look. */
-    pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
-  });
+    const map = new MLMap({
+      container,
+      style,
+      center: [-0.6502714, 35.6849994],
+      zoom: 15,
+      minZoom: 1,
+      maxZoom: 17,
+      attributionControl: { compact: true },
+      fadeDuration: 0,
+      /* Cap the backing-store resolution — big perf win on hiDPI screens,
+         and a subtly chunkier render fits the retro look. */
+      pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
+    });
 
-  map.on('style.load', () => {
-    addGraticule(map);
-    /* Weak devices: flat mercator renders lighter than the globe. */
-    const weak =
-      (navigator as any).deviceMemory !== undefined && (navigator as any).deviceMemory <= 2;
-    if (weak) map.setProjection({ type: 'mercator' });
-  });
-  /* Boot over the viewer's own country (coarse IP lookup, no permission). */
-  map.once('load', () => void flyToHome(map));
+    map.on('style.load', () => {
+      addGraticule(map);
+      /* Weak devices: flat mercator renders lighter than the globe. */
+      const weak =
+        (navigator as any).deviceMemory !== undefined && (navigator as any).deviceMemory <= 2;
+      if (weak) map.setProjection({ type: 'mercator' });
+    });
 
-  installQuantizedZoom(map, opts.onZoomStep);
-  installGlobeSpin(map);
+    installQuantizedZoom(map, opts.onZoomStep);
+    installGlobeSpin(map);
 
-  /* Surface map failures instead of rendering a silently blank canvas. */
-  map.on('error', (e: { error?: Error }) => {
-    console.error('[map]', e.error?.message ?? e);
-  });
+    /* Surface map failures instead of rendering a silently blank canvas. */
+    map.on('error', (e: { error?: Error }) => {
+      console.error('[map]', e.error?.message ?? e);
+    });
 
-  if (import.meta.env.DEV) {
-    (window as any).__map = map; // debugging convenience in dev only
+    if (import.meta.env.DEV) {
+      (window as any).__map = map; // debugging convenience in dev only
+    }
+
+    return map;
+  } catch (err) {
+    console.warn('[map] WebGL2 not available or GPU initialization failed:', err);
+    return null;
   }
-
-  return map;
 }
 
 /**

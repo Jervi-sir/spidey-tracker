@@ -7,6 +7,7 @@ import { sfx } from '../audio/sfx';
 
 interface Props {
   onReport?: () => void;
+  onTakeMeThere?: () => void;
 }
 
 const SEP = '   •   ';
@@ -55,7 +56,7 @@ function tickerContent(): ComponentChildren[] {
  * HUD chrome: pixel frame, logo plate, corner buttons, filter chips,
  * ticker bar, climbing hero, report CTA.
  */
-export function FrameChrome({ onReport }: Props) {
+export function FrameChrome({ onReport, onTakeMeThere }: Props) {
   const [wordA, wordB] = splitSiteName(config.siteName);
   return (
     <div class="hud">
@@ -104,8 +105,18 @@ export function FrameChrome({ onReport }: Props) {
 
       <div class="hero" aria-hidden="true" />
 
-      <button class="hud-btn px-primary px-yellow cta-tab" onClick={onReport}>
-        REPORT SIGHTING
+      <button
+        class="hud-btn px-primary px-yellow cta-tab"
+        onClick={() => {
+          sfx.blip();
+          if (onTakeMeThere) {
+            onTakeMeThere();
+          } else {
+            window.open('https://maps.app.goo.gl/Tp8EhcPGMffCGgUn7', '_blank', 'noopener,noreferrer');
+          }
+        }}
+      >
+        TAKE ME TO tha PLACE
       </button>
     </div>
   );

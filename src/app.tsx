@@ -17,25 +17,36 @@ export function App() {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap>();
   const [mapReady, setMapReady] = useState<MLMap | null>(null);
+  const [webGlFailed, setWebGlFailed] = useState(false);
 
   useEffect(() => {
-    if (!mapEl.current || mapRef.current) return;
-    const map = (mapRef.current = createMap(mapEl.current, {
-      onZoomStep: (dir) => sfx.zoom(dir),
-    }));
+    // Populate single location upfront so HUD components have it
+    addSightings([
+      {
+        id: 'single-location-1',
+        lat: 35.6849994,
+        lng: -0.6502714,
+        name: 'AUTODEAL',
+        message: 'AUTODEAL LOCATION PIN.',
+        createdAt: new Date().toISOString(),
+        placeLabel: 'ORAN, ALGERIA',
+        likeCount: 1,
+        replyCount: 0,
+      },
+    ]);
 
-    let stopFeed: (() => void) | undefined;
+    if (!mapEl.current || mapRef.current) return;
+    const map = createMap(mapEl.current, {
+      onZoomStep: (dir) => sfx.zoom(dir),
+    });
+
+    if (!map) {
+      setWebGlFailed(true);
+      return;
+    }
+    mapRef.current = map;
+
     map.once('load', async () => {
-      if (isDemoMode) {
-        const { generateMockSightings } = await import('./lib/mock');
-        const { loadLocalSightings } = await import('./lib/demoStore');
-        addSightings([...generateMockSightings(1200), ...loadLocalSightings()]);
-        const { startDemoFeed } = await import('./lib/demoFeed');
-        stopFeed = startDemoFeed();
-      } else {
-        const { startRealtime } = await import('./lib/realtime');
-        void startRealtime();
-      }
       await installPins(map);
       setMapReady(map);
       /* Dev-only handle so the map can be inspected from the console. Named
@@ -71,7 +82,6 @@ export function App() {
 
     return () => {
       unsubPing();
-      stopFeed?.();
       mapRef.current?.remove();
       mapRef.current = undefined;
     };
@@ -98,8 +108,77 @@ export function App() {
         id="map"
         ref={mapEl}
         style={{ position: 'absolute', inset: 0, background: 'var(--map-bg)' }}
+      >
+        {webGlFailed && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#d7f5ff',
+              fontFamily: 'var(--font-pixel, monospace)',
+              textAlign: 'center',
+              padding: '24px',
+              zIndex: 1,
+            }}
+          >
+            <div
+              style={{
+                background: 'rgba(5, 10, 20, 0.92)',
+                border: '2px solid #ff4757',
+                padding: '24px 32px',
+                maxWidth: '480px',
+                borderRadius: '8px',
+                boxShadow: '0 0 24px rgba(255, 71, 87, 0.4)',
+              }}
+            >
+              <div style={{ fontSize: '20px', color: '#ff4757', marginBottom: '12px', fontWeight: 'bold' }}>
+                WEBGL2 NOT DETECTED
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: '1.6', marginBottom: '16px' }}>
+                Your browser or environment currently has hardware acceleration or WebGL disabled.
+              </p>
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  textAlign: 'left',
+                  lineHeight: '1.5',
+                }}
+              >
+                <div><strong>How to enable:</strong></div>
+                <div>1. In Chrome / Brave / Edge: Settings &rarr; System &rarr; Enable <em>"Use graphics acceleration when available"</em>.</div>
+                <div>2. Visit <code>chrome://flags</code> &rarr; ensure <strong>WebGL 2.0</strong> is enabled.</div>
+                <div>3. Relaunch your browser.</div>
+              </div>
+              <div style={{ marginTop: '16px', fontSize: '13px', color: '#00e5ff' }}>
+                TRACKED LOCATION: 35.6850° N, 0.6503° W (AUTODEAL, ORAN)
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <FrameChrome
+        onReport={openReport}
+        onTakeMeThere={() => {
+          if (mapRef.current) {
+            mapRef.current.flyTo({
+              center: [-0.6502714, 35.6849994],
+              zoom: 16,
+              speed: 1.6,
+              curve: 1.4,
+              essential: true,
+            });
+          } else {
+            window.open('https://maps.app.goo.gl/Tp8EhcPGMffCGgUn7', '_blank', 'noopener,noreferrer');
+          }
+        }}
       />
-      <FrameChrome onReport={openReport} />
       <Radar map={mapReady} />
       <MenuDrawer
         onReport={openReport}

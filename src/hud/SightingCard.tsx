@@ -81,7 +81,7 @@ export function SightingCard({ sighting }: Props) {
     <div class="sighting-card">
       <div class="card-head">
         <span class="card-dot" />
-        SIGHTING REPORT
+        LOCATION DETAILS
       </div>
 
       {s.photoUrl && (
@@ -115,10 +115,24 @@ export function SightingCard({ sighting }: Props) {
       </div>
 
       <div class="card-actions">
-        <button class={`webup-btn ${liked ? 'on' : ''}`} onClick={like}>
+        <a
+          class="px-btn take-me-there-btn"
+          href={
+            s.lat && s.lng
+              ? `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`
+              : 'https://maps.app.goo.gl/Tp8EhcPGMffCGgUn7'
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => sfx.blip()}
+          style={{ width: '100%' }}
+        >
+          OPeN ON GoOgLe MaP
+        </a>
+        {/* <button class={`webup-btn ${liked ? 'on' : ''}`} onClick={like}>
           <span class="webup-icon" /> {s.likeCount ?? 0}
-        </button>
-        <button
+        </button> */}
+        {/* <button
           class="px-btn replies-btn"
           onClick={() => {
             sfx.blip();
@@ -126,8 +140,8 @@ export function SightingCard({ sighting }: Props) {
           }}
         >
           REPLIES ({s.replyCount ?? 0})
-        </button>
-        {isMine(s.id) ? (
+        </button> */}
+        {/* {isMine(s.id) ? (
           <button
             class={`card-delete ${confirmDelete ? 'confirming' : ''}`}
             onClick={async () => {
@@ -162,7 +176,7 @@ export function SightingCard({ sighting }: Props) {
           >
             {flagged ? 'FLAGGED' : 'FLAG'}
           </button>
-        )}
+        )} */}
       </div>
       {deleteErr && <div class="reply-err">{deleteErr}</div>}
 

@@ -9,21 +9,20 @@ const env = import.meta.env;
 
 export const config = {
   /** Site title shown in the logo plate, preloader, and ticker. */
-  siteName: (env.VITE_SITE_NAME as string) || 'SPOODY TRACKER',
+  siteName: 'HMMMM TRACKER',
   /** Short tagline used by the preloader boot sequence. */
   tagline:
-    (env.VITE_TAGLINE as string) ||
     'INTERACT WITH THE MAP TO VIEW SIGHTINGS ALL OVER THE WORLD.',
   /** Vector tile style base — OpenFreeMap public instance by default (keyless, no limits). */
-  tilesUrl: (env.VITE_TILES_URL as string) || 'https://tiles.openfreemap.org/planet',
-  /** Supabase — leave unset to run in local demo mode (no backend, localStorage only). */
-  supabaseUrl: (env.VITE_SUPABASE_URL as string) || '',
-  supabaseAnonKey: (env.VITE_SUPABASE_ANON_KEY as string) || '',
+  tilesUrl: 'https://tiles.openfreemap.org/planet',
+  /** Supabase — disabled, runs in local client-only mode */
+  supabaseUrl: '',
+  supabaseAnonKey: '',
   /** Optional Cloudflare Turnstile site key (anti-bot). Empty = disabled. */
-  turnstileSiteKey: (env.VITE_TURNSTILE_SITE_KEY as string) || '',
+  turnstileSiteKey: '',
   /** Creator credit shown in the ticker. Blank the URL to hide it. */
-  creatorHandle: (env.VITE_CREATOR_HANDLE as string) || '@REALMICHAELSHAD',
-  creatorUrl: (env.VITE_CREATOR_URL as string) || 'https://x.com/realmichaelshad',
+  creatorHandle: '@Jervi-sir',
+  creatorUrl: 'https://jervi.dev',
 } as const;
 
 /**
@@ -32,8 +31,9 @@ export const config = {
  */
 export const HOUSE_LINES: string[] = [
   'LIFE IS LIKE A DIH',
-  'I ONLY DEAL WITH BIG PATATOS SO NOT YOUR MOM',
+  'POTATO IS EXPENSIVE',
+  'SO TA7YA TEBOUNE',
 ];
 
-/** True when no backend is configured — the app runs fully client-side with demo data. */
-export const isDemoMode = !config.supabaseUrl || !config.supabaseAnonKey;
+/** Fully client-side mode with local state (no Supabase). */
+export const isDemoMode = true;
