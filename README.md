@@ -1,8 +1,8 @@
 # SPOODY TRACKER
 
-[![Spoody Tracker — live world map of sightings](public/og-card.png)](https://spoodytracker.com)
+[![Spoody Tracker — live world map of sightings](public/og-card.png)](https://jervi.dev)
 
-**Play it live: [spoodytracker.com](https://spoodytracker.com)** — no account, drop a sighting, watch it appear for everyone.
+**Play it live: [jervi.dev](https://jervi.dev)** — no account, drop a sighting, watch it appear for everyone.
 
 A retro pixel-art **community sightings map**. Anyone on Earth can drop a
 sighting — codename, message, optional photo, no account — and everyone else
@@ -33,7 +33,7 @@ your own reports persist in your browser, and every feature works locally.
 
 ## Going live (free backend)
 
-Demo mode is local-only. To make reports visible to *everyone*, add a free
+Demo mode is local-only. To make reports visible to _everyone_, add a free
 [Supabase](https://supabase.com) project (no card required):
 
 1. **Create a project** at database.new, then in the SQL editor run, in order:
@@ -85,10 +85,10 @@ the Pages environment settings.
 
 ## Optional hardening
 
-| Feature | How |
-| --- | --- |
-| Bot check on reports | Create a free [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) site, set `VITE_TURNSTILE_SITE_KEY` (client) and `supabase secrets set TURNSTILE_SECRET=...` (server) |
-| Stricter photo policy | `supabase secrets set TRUST_CLIENT_SCREEN=off` — photos land blurred until you approve them in the admin queue |
+| Feature               | How                                                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bot check on reports  | Create a free [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) site, set `VITE_TURNSTILE_SITE_KEY` (client) and `supabase secrets set TURNSTILE_SECRET=...` (server) |
+| Stricter photo policy | `supabase secrets set TRUST_CLIENT_SCREEN=off` — photos land blurred until you approve them in the admin queue                                                                             |
 
 ## Rebrand it
 
